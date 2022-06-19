@@ -18,4 +18,6 @@ public interface FruitService {
 
     void delete(Fruit fruit);
 
+    long countFruits();
+
 }

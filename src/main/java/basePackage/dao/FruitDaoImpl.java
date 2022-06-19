@@ -68,6 +68,11 @@ public class FruitDaoImpl implements FruitDao {
         fruitRepository.delete(fruit);
     }
 
+    @Override
+    public long countFruits() {
+        return fruitRepository.count();
+    }
+
     @Autowired
     public void setFruitRepository(FruitRepository fruitRepository) {
         this.fruitRepository = fruitRepository;

@@ -36,9 +36,9 @@ public class FruitController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(value="/{id}")
-    public void update(@RequestBody Fruit singer,
+    public void update(@RequestBody Fruit fruit,
                        @PathVariable Long id) {
-        fruitService.update(singer);
+        fruitService.update(fruit);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -48,10 +48,12 @@ public class FruitController {
         fruitService.delete(fruit);
     }
 
-
-    public FruitService getFruitService() {
-        return fruitService;
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/count")
+    public long countFruits() {
+        return fruitService.countFruits();
     }
+
 
     @Autowired
     public void setFruitService(FruitService fruitService) {

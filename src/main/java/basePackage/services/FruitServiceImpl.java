@@ -24,6 +24,7 @@ public class FruitServiceImpl implements FruitService{
         try {
             f = dao.findByName(name);
         } catch (NullFruitException e) {
+            // TODO: 19.06.2022 возвращать пустой объект
             System.err.println(e.getMessage());
         }
         return f;
@@ -67,6 +68,11 @@ public class FruitServiceImpl implements FruitService{
         } catch (NullFruitException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    @Override
+    public long countFruits() {
+        return dao.countFruits();
     }
 
     public FruitDao getDao() {

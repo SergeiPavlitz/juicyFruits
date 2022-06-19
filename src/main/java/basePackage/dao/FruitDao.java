@@ -21,4 +21,6 @@ public interface FruitDao {
 
     void delete(Fruit fruit) throws NullFruitException;
 
+    long countFruits();
+
 }
