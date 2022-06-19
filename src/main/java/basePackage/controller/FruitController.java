@@ -14,6 +14,7 @@ public class FruitController {
 
     private FruitService fruitService;
 
+    // TODO: 19.06.2022 разобраться с получением по имени
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/listdata")
