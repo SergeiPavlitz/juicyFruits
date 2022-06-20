@@ -28,6 +28,12 @@ public class FruitController {
         return fruitService.findById(id);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/", params = { "name" })
+    public Fruit fruitByName(@RequestParam("name") String name){
+        return fruitService.findByName(name);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value="/")
     public Fruit create(@RequestBody Fruit fruit) {
