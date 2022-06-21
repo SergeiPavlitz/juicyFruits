@@ -12,6 +12,9 @@ import java.util.List;
 @RequestMapping(value = "/fruit")
 public class FruitController {
 
+//    https://www.baeldung.com/exception-handling-for-rest-with-spring
+//    https://reflectoring.io/spring-boot-exception-handling/
+// TODO: 21.06.2022 добавить нормальную обработку эксепшенов
     private FruitService fruitService;
 
     // TODO: 19.06.2022 разобраться с получением по имени

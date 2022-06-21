@@ -2,6 +2,8 @@ package basePackage.services;
 
 import basePackage.dao.FruitDao;
 import basePackage.entities.Fruit;
+import basePackage.exceptions.EmptyNameException;
+import basePackage.exceptions.NoFruitWithIDException;
 import basePackage.exceptions.NullFruitException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class FruitServiceImpl implements FruitService{
         Fruit f = null;
         try {
             f = dao.findByName(name);
-        } catch (NullFruitException e) {
+        } catch (EmptyNameException e) {
             // TODO: 19.06.2022 возвращать пустой объект
             System.err.println(e.getMessage());
         }
@@ -35,8 +37,8 @@ public class FruitServiceImpl implements FruitService{
         Fruit f = null;
         try {
             f = dao.findById(id);
-        } catch (NullFruitException e) {
-            System.err.println(e.getMessage());
+        } catch (NoFruitWithIDException e) {
+            e.printStackTrace();
         }
         return f;
     }
