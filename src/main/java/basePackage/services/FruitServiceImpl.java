@@ -1,88 +1,81 @@
 package basePackage.services;
 
-import basePackage.dao.FruitDao;
 import basePackage.entities.Fruit;
 import basePackage.exceptions.EmptyNameException;
 import basePackage.exceptions.NoFruitWithIDException;
 import basePackage.exceptions.NullFruitException;
+import basePackage.repos.FruitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service("fruitService")
 public class FruitServiceImpl implements FruitService{
 
-    private FruitDao dao;
+    private FruitRepository fruitRepository;
 
     @Override
     public List<Fruit> findAll() {
-        return dao.findAll();
+
+        List<Fruit> result = new ArrayList<>();
+        Iterable<Fruit> iterable = fruitRepository.findAll();
+        iterable.forEach(result::add);
+        return result;
     }
 
     @Override
-    public Fruit findByName(String name) {
-        Fruit f = null;
-        try {
-            f = dao.findByName(name);
-        } catch (EmptyNameException e) {
-            // TODO: 19.06.2022 возвращать пустой объект
-            System.err.println(e.getMessage());
+    public Fruit findByName(String name) throws EmptyNameException {
+        if (name == null || name.isBlank()){
+            throw new EmptyNameException();
         }
-        return f;
+        return fruitRepository.findByNameEquals(name);
     }
 
     @Override
-    public Fruit findById(Long id) {
-        Fruit f = null;
-        try {
-            f = dao.findById(id);
-        } catch (NoFruitWithIDException e) {
-            e.printStackTrace();
+    public Fruit findById(Long id) throws NoFruitWithIDException {
+        Optional<Fruit> optional = fruitRepository.findById(id);
+        if (optional.isPresent()){
+            return optional.get();
+        }else{
+            throw new NoFruitWithIDException(id);
         }
-        return f;
     }
 
     @Override
-    public Fruit create(Fruit fruit) {
-        Fruit f = null;
-        try {
-            f = dao.create(fruit);
-        } catch (NullFruitException e) {
-            System.err.println(e.getMessage());
+    public Fruit create(Fruit fruit) throws NullFruitException {
+        if (fruit == null) {
+            throw new NullFruitException();
         }
-        return f;
+        return fruitRepository.save(fruit);
     }
 
     @Override
-    public void update(Fruit fruit) {
-        try {
-            dao.update(fruit);
-        } catch (NullFruitException e) {
-            e.printStackTrace();
+    public void update(Fruit fruit) throws NullFruitException {
+        if (fruit == null) {
+            throw new NullFruitException();
         }
+        fruitRepository.save(fruit);
     }
 
     @Override
     public void delete(Fruit fruit) {
-        try {
-            dao.delete(fruit);
-        } catch (NullFruitException e) {
-            System.err.println(e.getMessage());
+        if (fruit == null) {
+            throw new NullFruitException();
         }
+        fruitRepository.delete(fruit);
     }
 
     @Override
     public long countFruits() {
-        return dao.countFruits();
-    }
-
-    public FruitDao getDao() {
-        return dao;
+        return fruitRepository.count();
     }
 
     @Autowired
-    public void setDao(FruitDao dao) {
-        this.dao = dao;
+    public void setFruitRepository(FruitRepository fruitRepository) {
+        this.fruitRepository = fruitRepository;
     }
+
 }
