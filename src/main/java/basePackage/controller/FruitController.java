@@ -4,7 +4,6 @@ import basePackage.entities.Fruit;
 import basePackage.errorResponse.ErrorResponse;
 import basePackage.exceptions.EmptyNameException;
 import basePackage.exceptions.NoFruitWithIDException;
-import basePackage.exceptions.NullFruitException;
 import basePackage.services.FruitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -101,19 +100,8 @@ public class FruitController {
             NoFruitWithIDException noFruitWithIDException,
             WebRequest request
     ) {
-        System.out.println("Fruit name mustn't be empty/null");
+        System.out.println("There is no fruit with such id");
         return buildErrorResponse(noFruitWithIDException, noFruitWithIDException.getMessage(), HttpStatus.NOT_FOUND, request);
-    }
-
-
-    @ExceptionHandler(NullFruitException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleEmptyNameException(
-            NullFruitException nullFruitException,
-            WebRequest request
-    ) {
-        System.out.println("Fruit name mustn't be empty/null");
-        return buildErrorResponse(nullFruitException, nullFruitException.getMessage(), HttpStatus.NOT_FOUND, request);
     }
 
 

@@ -3,7 +3,6 @@ package basePackage.services;
 import basePackage.entities.Fruit;
 import basePackage.exceptions.EmptyNameException;
 import basePackage.exceptions.NoFruitWithIDException;
-import basePackage.exceptions.NullFruitException;
 import basePackage.repos.FruitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,26 +44,17 @@ public class FruitServiceImpl implements FruitService{
     }
 
     @Override
-    public Fruit create(Fruit fruit) throws NullFruitException {
-        if (fruit == null) {
-            throw new NullFruitException();
-        }
+    public Fruit create(Fruit fruit) {
         return fruitRepository.save(fruit);
     }
 
     @Override
-    public void update(Fruit fruit) throws NullFruitException {
-        if (fruit == null) {
-            throw new NullFruitException();
-        }
+    public void update(Fruit fruit) {
         fruitRepository.save(fruit);
     }
 
     @Override
     public void delete(Fruit fruit) {
-        if (fruit == null) {
-            throw new NullFruitException();
-        }
         fruitRepository.delete(fruit);
     }
 
