@@ -28,16 +28,27 @@ public class RestTest {
     private static final String URL_COUNT_FRUITS = "http://localhost:8080/fruit/count";
     RestTemplate restTemplate;
 
+    private static Long count = 0L;
+    private static String nameForCreateAndDelete = "ssss";
+
     @Before
     public void setUp() {
         restTemplate = new RestTemplate();
     }
 
     @Test
+    public void testCount(){
+        logger.info("--> Testing count fruits");
+        count = restTemplate.getForObject(URL_COUNT_FRUITS, Long.class);
+        logger.info("Fruit count is done successfully. There are " + count + " fruits.");
+    }
+
+    @Test
     public void testFindAll() {
         logger.info("--> Testing retrieve all fruits");
         Fruit[] fruits = restTemplate.getForObject(URL_GET_ALL_FRUITS, Fruit[].class);
-//        assertTrue(fruits.length == 3);
+        assertNotNull(fruits);
+        assertEquals(fruits.length, (long) count);
         listFruits(fruits);
         logger.info("--> All fruits : " + fruits.length);
     }
@@ -65,48 +76,48 @@ public class RestTest {
         int id = 11;
         logger.info("--> Testing update fruit by id : " + id);
         Fruit fruit = restTemplate.getForObject(URL_UPDATE_FRUIT, Fruit.class, id);
+        assertNotNull(fruit);
         fruit.setColor("lightgreen");
         restTemplate.put(URL_UPDATE_FRUIT, fruit, id);
         logger.info("fruit update successfully: " + fruit);
     }
 
     @Test
+    public void testCreate() {
+        logger.info("--> Testing create fruit");
+        Fruit fruitNew = new Fruit();
+        fruitNew.setName(nameForCreateAndDelete);
+        fruitNew.setColor("yyyy");
+        fruitNew.setHasStone(true);
+        fruitNew = restTemplate.postForObject(URL_CREATE_FRUIT, fruitNew, Fruit.class);
+        assertNotNull(fruitNew);
+        logger.info("Fruit created successfully: " + fruitNew);
+        Fruit fruit = restTemplate.getForObject(URL_GET_FRUIT_BY_NAME + nameForCreateAndDelete, Fruit.class);
+        assertNotNull(fruit);
+        logger.info("Created fruit : " + fruit);
+    }
+
+    @Test
     public void testDeleteById() {
-        int idForDelete = 12;
+        Fruit fruit = restTemplate.getForObject(URL_GET_FRUIT_BY_NAME + nameForCreateAndDelete, Fruit.class);
+        assertNotNull(fruit);
+        Long idForDelete = fruit.getId();
         logger.info("--> Testing delete Fruit by id : " + idForDelete);
         restTemplate.delete(URL_DELETE_FRUIT_BY_ID, idForDelete);
         Fruit[] fruits = restTemplate.getForObject(URL_GET_ALL_FRUITS, Fruit[].class);
-        Boolean found = false;
+        assertNotNull(fruits);
+        boolean found = false;
         for (Fruit s : fruits) {
-            if (s.getId() == idForDelete) {
+            if (s.getId().equals(idForDelete)) {
                 found = true;
+                break;
             }
         }
         assertFalse(found);
         listFruits(fruits);
     }
 
-    @Test
-    public void testCreate() {
-        logger.info("--> Testing create fruit");
-        Fruit fruitNew = new Fruit();
-        fruitNew.setName("lemon");
-        fruitNew.setColor("yellow");
-        fruitNew.setHasStone(true);
-        fruitNew = restTemplate.postForObject(URL_CREATE_FRUIT, fruitNew, Fruit.class);
-        logger.info("Fruit created successfully: " + fruitNew);
-        logger.info("Check created Fruit in all query: ");
-        Fruit[] fruits = restTemplate.getForObject(URL_GET_ALL_FRUITS, Fruit[].class);
-        listFruits(fruits);
-    }
 
-
-    @Test
-    public void testCount(){
-        logger.info("--> Testing count fruits");
-        Long n = restTemplate.getForObject(URL_COUNT_FRUITS, Long.class);
-        logger.info("Fruit count is done successfully. There are " + n + " fruits.");
-    }
 
     @Test
     public void EmptyNameExceptionCatch(){
@@ -128,10 +139,9 @@ public class RestTest {
     public void noFruitWithIDExceptionCatch(){
         long id = 10000;
         logger.info("--> Testing retrieve a fruit by no exist id");
-        Fruit fruit = null;
         NoFruitWithIDException noFruitWithIDException = new NoFruitWithIDException(id);
         try {
-            fruit = restTemplate.getForObject(URL_GET_FRUIT_BY_ID , Fruit.class, id);
+            Fruit fruit = restTemplate.getForObject(URL_GET_FRUIT_BY_ID , Fruit.class, id);
         } catch (RestClientException e) {
             HttpClientErrorException h = (HttpClientErrorException)e;
             assertEquals(HttpStatus.NOT_FOUND.value(), h.getRawStatusCode());
