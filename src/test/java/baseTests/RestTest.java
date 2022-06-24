@@ -3,8 +3,7 @@ package baseTests;
 import basePackage.entities.Fruit;
 import basePackage.exceptions.EmptyNameException;
 import basePackage.exceptions.NoFruitWithIDException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -14,8 +13,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RestTest {
 
     final Logger logger = LoggerFactory.getLogger(RestTest.class);
@@ -29,14 +29,15 @@ public class RestTest {
     RestTemplate restTemplate;
 
     private static Long count = 0L;
-    private static String nameForCreateAndDelete = "ssss";
+    private static final String nameForCreateAndDelete = "ssss";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         restTemplate = new RestTemplate();
     }
 
     @Test
+    @Order(1)
     public void testCount(){
         logger.info("--> Testing count fruits");
         count = restTemplate.getForObject(URL_COUNT_FRUITS, Long.class);
@@ -44,6 +45,7 @@ public class RestTest {
     }
 
     @Test
+    @Order(2)
     public void testFindAll() {
         logger.info("--> Testing retrieve all fruits");
         Fruit[] fruits = restTemplate.getForObject(URL_GET_ALL_FRUITS, Fruit[].class);
@@ -54,6 +56,7 @@ public class RestTest {
     }
 
     @Test
+    @Order(3)
     public void testFindById() {
         int id = 11;
         logger.info("--> Testing retrieve a fruit by id : "+ id);
@@ -63,6 +66,7 @@ public class RestTest {
     }
 
     @Test
+    @Order(4)
     public void testFindByName() {
         String name = "papaya";
         logger.info("--> Testing retrieve a fruit by name : "+ name);
@@ -72,6 +76,7 @@ public class RestTest {
     }
 
     @Test
+    @Order(5)
     public void testUpdate() {
         int id = 11;
         logger.info("--> Testing update fruit by id : " + id);
@@ -83,6 +88,7 @@ public class RestTest {
     }
 
     @Test
+    @Order(6)
     public void testCreate() {
         logger.info("--> Testing create fruit");
         Fruit fruitNew = new Fruit();
@@ -98,6 +104,7 @@ public class RestTest {
     }
 
     @Test
+    @Order(7)
     public void testDeleteById() {
         Fruit fruit = restTemplate.getForObject(URL_GET_FRUIT_BY_NAME + nameForCreateAndDelete, Fruit.class);
         assertNotNull(fruit);
@@ -119,7 +126,8 @@ public class RestTest {
 
 
 
-    @Test
+    @Test()
+    @Order(8)
     public void EmptyNameExceptionCatch(){
         String name = "";
         logger.info("--> Testing retrieve a fruit by emptyName");
@@ -136,6 +144,7 @@ public class RestTest {
     }
 
     @Test
+    @Order(9)
     public void noFruitWithIDExceptionCatch(){
         long id = 10000;
         logger.info("--> Testing retrieve a fruit by no exist id");
